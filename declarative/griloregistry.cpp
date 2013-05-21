@@ -22,8 +22,9 @@
 #include "griloregistry.h"
 #include <QDebug>
 
-GriloRegistry::GriloRegistry(QDeclarativeItem *parent) :
-  QDeclarativeItem(parent),
+
+GriloRegistry::GriloRegistry(QObject *parent) :
+  QObject(parent),
   m_registry(0) {
 
   grl_init(0, 0);
@@ -40,6 +41,9 @@ GriloRegistry::~GriloRegistry() {
   m_registry = 0;
 }
 
+void GriloRegistry::classBegin() {
+}
+
 void GriloRegistry::componentComplete() {
   m_registry = grl_registry_get_default();
 
@@ -51,8 +55,6 @@ void GriloRegistry::componentComplete() {
   g_list_free(sources);
 
   loadConfigurationFile();
-
-  QDeclarativeItem::componentComplete();
 }
 
 QStringList GriloRegistry::availableSources() {
@@ -73,7 +75,7 @@ void GriloRegistry::setConfigurationFile(const QString& file) {
     m_configurationFile = file;
     emit configurationFileChanged();
 
-    if (isComponentComplete()) {
+    if (m_registry) {
       loadConfigurationFile();
     }
   }
@@ -138,7 +140,7 @@ void GriloRegistry::grilo_content_changed_cb(GrlSource *source, GPtrArray *chang
 
 GrlSource *GriloRegistry::lookupSource(const QString& id) {
   if (m_registry) {
-    return grl_registry_lookup_source(m_registry, id.toAscii().constData());
+    return grl_registry_lookup_source(m_registry, id.toUtf8().constData());
   }
 
   return 0;

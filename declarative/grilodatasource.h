@@ -24,7 +24,7 @@
 #ifndef GRILO_DATA_SOURCE_H
 #define GRILO_DATA_SOURCE_H
 
-#include <QDeclarativeItem>
+#include <QObject>
 #include <grilo.h>
 #include <QVariant>
 #include <QBasicTimer>
@@ -33,7 +33,7 @@ class GriloMedia;
 class GriloModel;
 class GriloRegistry;
 
-class GriloDataSource : public QDeclarativeItem {
+class GriloDataSource : public QObject {
   Q_OBJECT
 
   Q_PROPERTY(GriloRegistry* registry READ registry WRITE setRegistry NOTIFY registryChanged);
@@ -100,7 +100,7 @@ public:
     All = GRL_TYPE_FILTER_ALL,
   };
 
-  GriloDataSource(QDeclarativeItem *parent = 0);
+  GriloDataSource(QObject *parent = 0);
   virtual ~GriloDataSource();
 
   const QList<GriloMedia *> *media() const;
